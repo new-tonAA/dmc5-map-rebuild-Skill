@@ -40,6 +40,8 @@ This is a shader-equivalence fix, not an exposure fix. The Blender REI importer 
 
 The full trailer also exposed a variant-audit failure: seven exterior meshes still referenced `/InterchangeAssets/gltf/MI_Default_Opaque` even though the static trailer pieces had correct materials. Count every mesh under each prop variant and verify every StaticMesh slot independently.
 
+The static trailer exposed a second mapping failure. Sorting imported names lexicographically made `Submesh_-_10...` appear before `Submesh_-_2...`, and sorting by only the first number mixed the three curtain records with the main 24 records. Match the complete submesh tuple from the sanitized asset name to the SCN/REI record before assigning materials or actor labels.
+
 ## Rotation assembly failure and fix
 
 Repeated walls, signs, and windows appeared in the correct positions but faced backward. The source-to-UE conversion used the wrong reflected-basis quaternion. The incorrect conversion was:

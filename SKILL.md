@@ -38,6 +38,7 @@ Before using it, define local paths for the target UE project, UE executable, DM
 5. Inspect both StaticMesh material slots and material graph/instance parameters. A populated slot can still reference a bad glTF material or placeholder texture.
 6. Replace legacy glTF materials that reference `T_White_srgb`, `T_Generic_N`, or other `/InterchangeAssets/gltf` placeholders.
    - Audit every submesh of every multi-part prop variant. A correct static/body variant does not prove that the full/exterior variant has correct material slots.
+   - Never pair SCN material records with imported meshes using lexicographic order or only the first submesh number. Match the complete sanitized submesh tuple, such as `Submesh_-_10__0_0_0_10_` to `Submesh - 10 (0 0 0 10)`, then assign the corresponding material slot.
 7. Treat `NullWhite` and `NullNormalRoughness` on dedicated illumination/fake-light materials as potentially valid; do not replace them blindly.
 8. For texture review, use UE viewport `Unlit` / `无光照`:
    - `r.EyeAdaptation.CachedLightingPreExposure 8`
