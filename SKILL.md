@@ -44,6 +44,7 @@ Before using it, define local paths for the target UE project, UE executable, DM
    - `r.ExposureOffset 0`
 9. Save all dirty assets and the level before a backup. Verify asset paths, material slots, texture references, actor count, bounds, transforms, and a viewport or Blender screenshot.
 10. Restore intended scene lighting after diagnostic preview changes. The Arcade validation baseline is DirectionalLight intensity `4.0`, SkyLight intensity `0.35`, and indirect/volumetric scattering `1.0`; do not save temporary exposure tuning as final lighting.
+11. When RE Engine fake-light materials cannot be reproduced, place a small number of low-intensity real lights at verified fixture/emissive actor centers. Keep them in a dedicated folder, avoid broad floodlights, disable unnecessary shadows on helper lights, and separate viewport exposure commands from saved light values.
 
 # Validation gates
 

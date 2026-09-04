@@ -84,6 +84,8 @@ Then use `Unlit` / `无光照`. Lit mode is for lighting review; cached lighting
 
 After preview tests, restore saved scene lighting instead of leaving diagnostic values in the level. The Arcade baseline used here is DirectionalLight `4.0`, SkyLight `0.35`, and indirect/volumetric scattering `1.0`.
 
+The Arcade common-light SCN could not be safely converted into complete UE point/spot lights because its RSZ parse was unreliable. The practical fallback is two low-intensity PointLights placed at the verified `sm0131_illumination` fixture centers, stored under a dedicated converted-fake-lights folder. Do not compensate for missing fake lights with a broad high-intensity floodlight.
+
 ## Private backup recipe
 
 Save all dirty assets and the level, then copy project content to a private, user-controlled backup location such as `<BACKUP_ROOT>`:
