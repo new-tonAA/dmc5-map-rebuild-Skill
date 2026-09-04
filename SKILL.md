@@ -26,6 +26,7 @@ Before using it, define local paths for the target UE project, UE executable, DM
 1. Parse source meshes with the DMC5 REI Blender add-on using the matching mesh and MDF. Do not use `from_pydata` or temporary grid placement as the final export path.
 2. Parse SCN resource paths and compose each `via.Transform` through its full parent chain. Place the UE actor using the resulting world transform, not the mesh origin or an arbitrary local transform.
    - With the source-to-UE basis `UE=(source X, source Z, source Y)`, convert source quaternion `(qx,qy,qz,qw)` to UE quaternion `(qx,qz,qy,-qw)`. The final `-qw` is required by the reflected basis.
+   - Do not write prop-specific placement shortcuts with a positive `qw`. A hardcoded trailer rotation using `(qx,qz,qy,+qw)` produced a whole vehicle facing backward even though its position looked correct.
    - A generated label such as `Arcade_Corrected_####` uses the sequential record index from the corrected instance JSON, not the SCN `object_index`.
 3. Use source textures exported by REI only after checking them in Blender or as image files. Treat an unverified TEX decoder or noisy PNG as invalid.
 4. Build or repair exact materials with this mapping:
@@ -43,6 +44,7 @@ Before using it, define local paths for the target UE project, UE executable, DM
    - `r.LocalExposure 0`
    - `r.ExposureOffset 0`
 9. Save all dirty assets and the level before a backup. Verify asset paths, material slots, texture references, actor count, bounds, transforms, and a viewport or Blender screenshot.
+   - For multi-part vehicles, verify every submesh actor has the same SCN-derived world rotation and that representative interior, wheel, window, and shell pieces use the expected material family.
 10. Restore intended scene lighting after diagnostic preview changes. The Arcade validation baseline is DirectionalLight intensity `4.0`, SkyLight intensity `0.35`, and indirect/volumetric scattering `1.0`; do not save temporary exposure tuning as final lighting.
 11. When RE Engine fake-light materials cannot be reproduced, place a small number of low-intensity real lights at verified fixture/emissive actor centers. Keep them in a dedicated folder, avoid broad floodlights, disable unnecessary shadows on helper lights, and separate viewport exposure commands from saved light values.
 

@@ -56,6 +56,8 @@ The validated conversion is:
 
 Apply it consistently to generated PropsLarge actors. Do not globally add an arbitrary 180-degree rotation; some mesh families have legitimate different orientations. Verify representative wall, sign, roof, and window families with an Unlit A/B preview.
 
+The trailer had a special regression: its placement helper used `unreal.Quat(0, 0, 0.677228, +0.735773)` instead of the SCN conversion with `-qw`. This put all 34 trailer submesh actors at plausible positions but rotated the complete vehicle backward by roughly 180 degrees. Always derive the trailer rotation from the corrected SCN quaternion and verify one shared yaw across full and static variants.
+
 Keep the sequential generated record number separate from the SCN `object_index`. Mixing those identifiers can update the wrong actor.
 
 ## Missing-map diagnosis
