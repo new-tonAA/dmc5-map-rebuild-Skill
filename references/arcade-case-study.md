@@ -29,6 +29,8 @@ The repaired material roles included:
 
 Do not connect `ATOS` directly to Emissive. This washes out the model.
 
+Also inspect the REI shader's `Emissive_Intensity`. The trailer's `ExteriorShell_02`, `lamp`, `neon_light1`, and `neon_light2` materials expose an intensity of `0.0`; directly wiring their EMI/ALP/ALBA images to UE Emissive caused the full trailer to wash white. The clean approximation keeps the ALBM/NRMR surface maps and omits those zero-strength Emissive links.
+
 The trailer window needed a separate correction. REI reports `sm7000_trailer.mesh - _Exteriorshell_glass_ex` as `Tran` / Transparent Shader, while earlier UE repairs alternated between Opaque and Translucent. The validated approximation is:
 
 - `glass_ex_albm` -> Base Color, sRGB on.
