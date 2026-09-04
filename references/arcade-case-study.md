@@ -29,14 +29,14 @@ The repaired material roles included:
 
 Do not connect `ATOS` directly to Emissive. This washes out the model.
 
-The trailer window needed a separate correction. REI reports `sm7000_trailer.mesh - _Exteriorshell_glass_ex` as `Tran` / Transparent Shader, while the first UE repair left it as Opaque. The validated approximation is:
+The trailer window needed a separate correction. REI reports `sm7000_trailer.mesh - _Exteriorshell_glass_ex` as `Tran` / Transparent Shader, while earlier UE repairs alternated between Opaque and Translucent. The validated approximation is:
 
 - `glass_ex_albm` -> Base Color, sRGB on.
 - `glass_ex_nrmr` -> Normal, sRGB off, normal compression.
-- `glass_ex_atos` -> packed data, sRGB off; use its documented opacity-channel approximation for UE translucency rather than treating the whole RGB image as Emissive.
-- UE material blend mode -> Translucent; use low glass roughness and validate in Unlit and Lit views.
+- `glass_ex_atos` -> packed data, sRGB off; use its documented opacity-channel approximation for UE masked/dithered rendering rather than treating the whole RGB image as Emissive.
+- UE material blend mode -> Masked/Dithered with clip value around `0.333`; use low glass roughness and validate in Unlit and Lit views.
 
-This is a shader-equivalence fix, not an exposure fix. Inspect the original RE shader type before choosing Opaque, Masked, or Translucent.
+This is a shader-equivalence fix, not an exposure fix. The Blender REI importer sets this family to Dithered; do not choose Translucent solely because the material name contains `glass`.
 
 The full trailer also exposed a variant-audit failure: seven exterior meshes still referenced `/InterchangeAssets/gltf/MI_Default_Opaque` even though the static trailer pieces had correct materials. Count every mesh under each prop variant and verify every StaticMesh slot independently.
 

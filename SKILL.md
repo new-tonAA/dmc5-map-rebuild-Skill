@@ -33,7 +33,7 @@ Before using it, define local paths for the target UE project, UE executable, DM
    - `NRMR` -> Normal, sRGB off, normal-map compression.
    - `ATOS` -> alpha/transmission/occlusion-style inputs when supported; never connect it directly to Emissive.
    - `EMI`, `ALP`, or `ALBA` -> Emissive only when the MDF identifies that role.
-   - Inspect the REI material shader type before choosing UE blend mode. A `Tran` / Transparent Shader material must not be left as UE Opaque. For glass, keep ALBM and NRMR as the surface maps, keep ATOS as packed data, and use a documented opacity approximation only when the original RE shader cannot be reproduced.
+   - Inspect the REI material shader type before choosing UE blend mode. A `Tran` / Transparent Shader material should normally map to UE `Masked`/Dithered with a documented ATOS opacity channel, not automatically to `Translucent`. Keep ALBM and NRMR as the surface maps and never use packed ATOS RGB as Emissive.
 5. Inspect both StaticMesh material slots and material graph/instance parameters. A populated slot can still reference a bad glTF material or placeholder texture.
 6. Replace legacy glTF materials that reference `T_White_srgb`, `T_Generic_N`, or other `/InterchangeAssets/gltf` placeholders.
    - Audit every submesh of every multi-part prop variant. A correct static/body variant does not prove that the full/exterior variant has correct material slots.
