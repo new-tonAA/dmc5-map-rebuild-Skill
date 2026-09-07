@@ -58,6 +58,7 @@ Before using it, define local paths for the target UE project, UE executable, DM
 15. If the Arcade vehicle road remains black because source IBL/light-probe data is not yet imported, use at most a few explicitly labeled, low-intensity, no-shadow compatibility road-fill lights. Record their positions and remove them after IBL/probe restoration; do not treat them as source light parity.
 16. For BC6H DMC5 Cubemaps that UE 5.8 Interchange rejects, extract the six cube faces, decode them to ordinary image data, rebuild a standard six-face DDS Cubemap, import it as `TextureCube`, and connect it to the region SkyLight. Keep the original `.tex.11` source and conversion manifest beside the target project; do not silently substitute a generic HDRI.
 17. Treat `PZ_M02_arcade` post-process data as authoritative: DMC5 Arcade has `AutoExposure=0` and `EV=3`. Do not use broad UE Histogram exposure or subjective light scaling as the final restoration. Restore local source light parameters first; keep engine-equivalence mappings and unresolved IES/LightProbe work explicitly separate.
+18. Audit every road/fixture group in the region SCN. For Arcade, explicit light count alone is insufficient: restore and validate `LP_M02_arcade`/`LP_M02_arcade_hokan` LightProbe coverage and distinguish normal `LC_M02_arcade00` from alternate/event cubemaps before concluding that a road is missing lights.
 
 # Validation gates
 
