@@ -54,6 +54,21 @@ Disabling Lumen is a hardware compatibility choice, not proof that the scene's s
 
 Do not claim that turning off UE Lumen reproduces DMC5's ray-tracing-off mode. If source RT parity is required, record the DMC5 RT switch/mission override separately and map it to UE ray-tracing, reflections, shadows, and post-process features as distinct decisions.
 
+## Source-authoritative Arcade baseline
+
+The `PZ_M02_arcade` post-process record is now decoded from `location02_light.scn.19`:
+
+- `AutoExposure = 0`; the original Arcade zone does not use dynamic auto exposure.
+- `EV = 3`.
+- `BrightAdaptationRate = 0.03` and `DarkAdaptationRate = 0.05` are retained as source metadata, but are inactive when `AutoExposure = 0`.
+- `MaxWhitePoint = 5`, `MinWhitePoint = 3.5`, and `WhiteRange = 0.95` remain source tone-mapping metadata pending a dedicated UE curve mapping.
+
+The target UE post-process maps this to Manual exposure with bias/EV `3.0` and `r.LocalExposure 0`. This is a source-driven baseline, not a visual brightness adjustment.
+
+All 39 Arcade local-light actors now restore source intensity, BGRA-corrected color, derived effective range, spot cone/spread, source radius, and source shadow flags. Their validation is saved in `Saved/source_light_parity_validation.json` and currently reports zero parameter errors. Four IES actors remain approximate only because the original IES profile path is not yet attached in UE.
+
+Do not use `arcade_lighting_balance_override.json` or `final_environment_light_balance.json` as source truth. Those records describe prior diagnostic experiments. The authoritative local-light state is `Saved/arcade_source_light_values_restored.json`.
+
 ## Parameter parity
 
 - Local Arcade Point/Spot records currently preserve source intensity and color; 35 non-IES range mappings also match after the source-meter to UE-centimeter conversion.
