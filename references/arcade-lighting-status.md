@@ -62,7 +62,8 @@ Do not claim that turning off UE Lumen reproduces DMC5's ray-tracing-off mode. I
 - Unreal Python `unreal.Color` uses BGRA constructor order. Convert source RGB as `Color(b, g, r, a)` and validate actual component `r/g/b` values after saving.
 - Do not map `ReferenceEffectiveRange` directly to the UE attenuation radius for every light. When `IlluminanceThreshold` is available, derive an effective source range with `sqrt(Intensity / IlluminanceThreshold)` in source units and use the larger of that value and `ReferenceEffectiveRange`; direct `v11` mapping made several 50k-candela lights look too bright with 2–4 m cutoffs.
 - The source trailer `Headlight` material is `DefS` with `headlight_ATOS` and `Emissive_Intensity=0.0`; the static `_light` material is `DefS` with `light_ALBM` and no emissive map. No vehicle Light Actor was found in the Arcade light SCN.
-- Two low-intensity vehicle SpotLights may be placed from the verified Full_04 headlight bounds, but they must be labeled as vehicle-light approximations rather than source parity.
+- Do not place vehicle SpotLights or PointLights from Full_04 bounds as a visual approximation. The current target has zero vehicle light actors. Read [references/arcade-vehicle-light-source-audit.md](arcade-vehicle-light-source-audit.md) before changing this state.
+- `trailer_emissivecontrol.clip` is a material/animation-control resource that still needs curve/property decoding; it is not a license to add real lights.
 
 ## Hardware warning
 

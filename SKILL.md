@@ -53,6 +53,7 @@ Before using it, define local paths for the target UE project, UE executable, DM
 10. Audit the region-specific light SCN before claiming intended lighting is restored. Count `DirectionalLight`, `PointLight`, `SpotLight`, `IESLight`, `IBL`, `LightProbes`, and post-process objects from the RSZ object table, then parse relevant fields and full parent chains.
 11. Keep diagnostic lighting and source-light restoration separate. The historical Arcade baseline of DirectionalLight `4.0`, SkyLight `0.35`, and indirect/volumetric scattering `1.0` is only a preview fallback, not proof of source-light parity.
 12. When RE Engine fake-light materials cannot be reproduced, place a small number of low-intensity real lights at verified fixture/emissive actor centers only after the region light inventory is known. Keep them in a dedicated folder, avoid broad floodlights, disable unnecessary shadows on helper lights, and record every approximation as incomplete.
+13. For vehicle lighting, read [references/arcade-vehicle-light-source-audit.md](references/arcade-vehicle-light-source-audit.md). Do not infer headlight PointLights/SpotLights from a mesh name, a material texture, or a visual screenshot. First verify an SCN/prefab/event light component or decode the material-animation resource; otherwise keep the vehicle at zero added light actors.
 
 # Validation gates
 
@@ -63,6 +64,7 @@ Before using it, define local paths for the target UE project, UE executable, DM
 - Actors are distributed at SCN-derived positions rather than stacked at one origin.
 - No `Video memory exhausted` or bulk texture duplication occurs.
 - Source-light parity is not claimed unless region-specific Point/Spot/IES objects, IBL/reflection resources, LUTs, post-process zones, and parent-chain transforms have been audited.
+- Vehicle-light parity is not claimed unless `trailer_emissivecontrol.clip`, the Arcade trailer MDF/material roles, and any scene/prefab light-component references have been audited.
 
 For the portable debugging history, read [references/arcade-case-study.md](references/arcade-case-study.md).
 
