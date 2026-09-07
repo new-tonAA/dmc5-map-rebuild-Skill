@@ -59,6 +59,9 @@ Do not claim that turning off UE Lumen reproduces DMC5's ray-tracing-off mode. I
 - Local Arcade Point/Spot records currently preserve source intensity and color; 35 non-IES range mappings also match after the source-meter to UE-centimeter conversion.
 - The two common DirectionalLight colors and quaternions are preserved, but their UE intensity is intentionally normalized and must not be called numerically identical.
 - IES profile application remains unresolved when UE AssetTools/Interchange produces no `TextureLightProfile`; keep those four lights marked as approximations.
+- Unreal Python `unreal.Color` uses BGRA constructor order. Convert source RGB as `Color(b, g, r, a)` and validate actual component `r/g/b` values after saving.
+- The source trailer `Headlight` material is `DefS` with `headlight_ATOS` and `Emissive_Intensity=0.0`; the static `_light` material is `DefS` with `light_ALBM` and no emissive map. No vehicle Light Actor was found in the Arcade light SCN.
+- Two low-intensity vehicle SpotLights may be placed from the verified Full_04 headlight bounds, but they must be labeled as vehicle-light approximations rather than source parity.
 
 ## Hardware warning
 
