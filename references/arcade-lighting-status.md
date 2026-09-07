@@ -86,4 +86,6 @@ The target also has three explicitly labeled `M2_Arcade_RoadFill_00..02` low-int
 
 The saved post-process keeps Histogram exposure but reduces adaptation speed up/down to `0.5`; this limits visible exposure pumping without pretending that UE's exposure model is DMC5's.
 
-The current UE map still has a separate environment-light gap: the explicit 39 Arcade Point/Spot/IES records are represented, but the source `IBL_M02_00/01` resources and `LP_M02_overall00/01` probe data are not yet applied. A black vehicle rear/corridor is therefore not proof that another arbitrary PointLight is missing. Restore the IBL/probe fill next, then retune local lights against it.
+The target now has a converted Arcade local cubemap at `/Game/DMC5/M2/Lighting/IBLTest/Arcade00_Cube`, connected to `M2_Arcade_SkyLight`. It was built from `lc_m02_arcade00.tex.11` by extracting six BC6H faces, decoding them with Blender, and rebuilding a standard six-face DDS Cubemap because the custom UE 5.8 Interchange path rejects BC6H DDS input. The source `IBL_M02_00/01` resources and `LP_M02_overall00/01` probe data are still not fully mapped; the cubemap is an environment-fill restoration pass, not complete LightProbe parity.
+
+After the cubemap is active, remove the temporary `M2_Arcade_RoadFill_*` lights and retune local source-light scales against the environment. A black vehicle rear/corridor is no longer proof that another arbitrary PointLight is missing; check the cubemap, probe data, local light scale, and post-process exposure first.

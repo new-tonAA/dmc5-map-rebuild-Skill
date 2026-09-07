@@ -53,6 +53,8 @@ Generic corridor balance changes must not modify the two source-backed vehicle h
 
 The current target uses three separate `M2_Arcade_RoadFill_*` compatibility lights for the missing vehicle-road environment fill. These are not vehicle light actors and must not be confused with the two source-backed headlight SpotLights.
 
+The current saved pass removes those temporary road-fill actors after connecting the converted `Arcade00_Cube` environment to `M2_Arcade_SkyLight`. The remaining vehicle-road mismatch is now tracked as incomplete IBL/LightProbe/post-process parity rather than an unverified vehicle helper-light problem.
+
 ## UE reconstruction rule
 
 - Do not add vehicle headlight SpotLights or PointLights from visual guesses. The Arcade target uses only the two source-backed records at object indices `178` and `182`.
