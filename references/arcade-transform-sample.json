@@ -1,0 +1,8 @@
+{
+  "source_quaternion_xyzw": [0.0, 0.6772283315658569, 0.0, 0.7357729077339172],
+  "ue_quaternion_xyzw": [0.0, 0.0, 0.6772283315658569, -0.7357729077339172],
+  "ue_rotation_degrees": {"pitch": 0.0, "yaw": -85.2549, "roll": 0.0},
+  "source_to_ue_basis": ["source_x", "source_z", "source_y"],
+  "vehicle_world_location_cm": [-12459.079742, 5100.529861, -243.850493],
+  "warning": "Using +qw here makes the complete trailer face backward while its position still looks plausible."
+}

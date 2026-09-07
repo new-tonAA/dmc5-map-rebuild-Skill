@@ -60,3 +60,5 @@ Before using it, define local paths for the target UE project, UE executable, DM
 - No `Video memory exhausted` or bulk texture duplication occurs.
 
 For the portable debugging history, read [references/arcade-case-study.md](references/arcade-case-study.md).
+
+For a one-pass reusable implementation, read [references/arcade-quickstart.md](references/arcade-quickstart.md), then compare against [references/arcade-golden-result.json](references/arcade-golden-result.json). Run `scripts/validate_arcade_case.py` before touching a UE project and `scripts/ue_arcade_validation.py` inside UE after assembly.

@@ -1,0 +1,28 @@
+{
+  "region": "l02_01_arcade",
+  "level": "/Game/Maps/M2_Arcade_Final",
+  "actors_total": 444,
+  "static_mesh_actors": 440,
+  "light_actors": 4,
+  "vehicle": {
+    "full_submeshes": 7,
+    "static_submeshes": 27,
+    "total_submesh_actors": 34,
+    "world_location_cm": [-12459.079742, 5100.529861, -243.850493],
+    "world_yaw_deg": -85.2549
+  },
+  "lighting": {
+    "directional_intensity": 4.0,
+    "sky_intensity": 0.35,
+    "indirect_lighting_intensity": 1.0,
+    "volumetric_scattering_intensity": 1.0,
+    "converted_fixture_point_lights": 2
+  },
+  "validation": {
+    "all_active_static_meshes_have_material": true,
+    "vehicle_full_materials_are_clean": true,
+    "vehicle_static_records_match_complete_submesh_keys": true,
+    "no_direct_zero_intensity_emissive_links": true,
+    "preview_mode": "Unlit then Lit"
+  }
+}

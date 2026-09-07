@@ -1,0 +1,21 @@
+{
+  "full_trailer": {
+    "S00": {"role": "neon_light2", "base_color": "NullWhite", "normal": "neonsign_NRMR", "emissive": null, "blend": "Opaque"},
+    "S01": {"role": "neon_light1", "base_color": "neonsign_ALBM", "normal": "neonsign_NRMR", "emissive": null, "blend": "Opaque"},
+    "S02": {"role": "seat", "base_color": "_3_seat01A_ALBM", "normal": "_3_seat01A_NRMR", "emissive": null, "blend": "Opaque"},
+    "S03": {"role": "exterior_glass", "base_color": "glass_ex_ALBM", "normal": "glass_ex_NRMR", "opacity": "glass_ex_ATOS.R", "blend": "Masked"},
+    "S04": {"role": "headlight", "base_color": "NullWhite", "normal": "NullNormalRoughness", "emissive": null, "blend": "Opaque"},
+    "S05": {"role": "lamp", "base_color": "glass_ex_ALBM", "normal": "glass_ex_NRMR", "emissive": null, "blend": "Opaque"},
+    "S06": {"role": "exterior_shell_02", "base_color": "ExteriorShell_02_ALBM", "normal": "ExteriorShell_02_NRMR", "emissive": null, "blend": "Opaque"}
+  },
+  "static_trailer_examples": {
+    "Submesh_-_10__0_0_0_10_": {"record": "Submesh - 10 (0 0 0 10)", "material": "door_ALBM/door_NRMR/door_ATOS", "blend": "Masked"},
+    "Submesh_-_14__0_0_0_14_": {"record": "Submesh - 14 (0 0 0 14)", "material": "Intermediate_03_ALBM/Intermediate_03_NRMR/Intermediate_03_ATOS", "blend": "Masked"},
+    "Submesh_-_16__0_0_0_16_": {"record": "Submesh - 16 (0 0 0 16)", "material": "glass_ex_ALBM/glass_ex_NRMR", "blend": "Opaque"}
+  },
+  "global_rules": [
+    "Do not connect ATOS RGB directly to Emissive",
+    "Do not use lexicographic submesh ordering",
+    "Do not connect EMI/ALP/ALBA when REI Emissive_Intensity is 0.0"
+  ]
+}

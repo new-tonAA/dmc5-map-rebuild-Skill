@@ -1,7 +1,7 @@
 interface:
   display_name: "DMC5 Arcade"
   short_description: "Restore DMC5 Arcade scenes in UE5"
-  default_prompt: "Use $dmc5-arcade to restore a DMC5 RE Engine Arcade scene in UE5 with exact transforms, materials, Unlit preview, and E-drive backups."
+  default_prompt: "Use $dmc5-arcade and its golden-case quickstart to restore a DMC5 RE Engine Arcade scene in UE5 with exact transforms, materials, Unlit preview, validation, and E-drive backups."
 
 policy:
   allow_implicit_invocation: true
