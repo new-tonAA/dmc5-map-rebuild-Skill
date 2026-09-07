@@ -59,6 +59,8 @@ The current source-authoritative pass restores the original Arcade local-light p
 
 The vehicle-road comparison must include both source Arcade probe objects. `LP_M02_arcade` is centered near the trailer/Arcade area, while `LP_M02_arcade_hokan` is a second coverage object with a different source flag and spacing value. A missing probe-equivalent can make three roads dark even when all 39 explicit local lights are present.
 
+The normal `LC_M02_arcade00` LocalCubemap is now rebuilt with distinct source faces. Its earlier duplicate-face conversion was invalid and must not be used for vehicle-road comparisons.
+
 ## UE reconstruction rule
 
 - Do not add vehicle headlight SpotLights or PointLights from visual guesses. The Arcade target uses only the two source-backed records at object indices `178` and `182`.

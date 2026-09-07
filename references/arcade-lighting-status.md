@@ -108,3 +108,5 @@ After the cubemap is active, remove the temporary `M2_Arcade_RoadFill_*` lights 
 The full Arcade source coverage audit is saved as `Saved/arcade_all_road_source_coverage.json`. It confirms 39 explicit lights are distributed across `display01`, `display02`, `display03`, `display04`, the `OCC_arcade00` fixture group, and the unnamed/street/vehicle group. It also confirms two Arcade LightProbe objects: `LP_M02_arcade` and `LP_M02_arcade_hokan`, both using `LP_M02_arcade.lprb` plus `LP_M02_merge_net.prb`. The three dark roads should be diagnosed against this probe coverage, not by assuming the `display01` walkway lights represent the whole map.
 
 `LC_M02_arcade00`, `LC_M02_arcade01`, and `LC_M02_arcade_event` are distinct source cubemap states. Keep `arcade00` as the normal Arcade baseline; do not globally substitute the alternate or event cubemap.
+
+The Cubemap extraction tool previously ignored `imageIndex`, producing six duplicate faces. That bug is fixed: each LocalCubemap now has distinct source faces and corrected DDS Cubemap assets. Do not use old test Cubemaps generated before this fix.
