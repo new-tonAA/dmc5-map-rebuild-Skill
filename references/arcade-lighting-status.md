@@ -24,6 +24,8 @@ The safe diagnostic pass may contain:
 
 This state is **not source-light parity**. It is only a controlled baseline for material and scene validation.
 
+The current staged Arcade pass has 42 UE Light actors: 2 DirectionalLights, 1 existing SkyLight, and 39 local Point/Spot actors. The 23 PointLight and 12 SpotLight records are represented with source positions, colors, intensities, ranges, cone angles, and selected shadows. The 4 IESLight records are currently PointLight approximations because both UE 5.8 AssetTools and Interchange attempts returned no `TextureLightProfile` asset. This pass must remain marked incomplete until the IES profiles are imported or a validated equivalent is built.
+
 ## Required restoration order
 
 1. Parse `l02_01_arcade.scn.19` with an RSZ object-table pass before full field decoding.
@@ -32,6 +34,8 @@ This state is **not source-light parity**. It is only a controlled baseline for 
 4. Group IES resources with their owning light; do not count an IES profile as an independent UE light if it is a component on the same GameObject.
 5. Restore lights in small batches, starting with enabled Arcade fixtures and low-risk shadow settings.
 6. After every batch, validate actor count, bounds, Lit/Unlit views, frame time, GPU memory, and forward-light warnings.
+
+The first batch may use source-candela values with inverse-square falloff and disable low-impact shadows on a GTX 1650. Record that shadow policy as an approximation; do not silently turn it into a final parity claim.
 
 ## Hardware warning
 

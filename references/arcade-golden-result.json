@@ -24,6 +24,9 @@
     "diagnostic_indirect_lighting_intensity": 1.0,
     "diagnostic_volumetric_scattering_intensity": 1.0,
     "converted_fixture_point_lights": 0,
+    "current_ue_light_actors": 42,
+    "current_local_light_actors": 39,
+    "ies_profiles_applied": false,
     "source_light_parity_verified": false
   },
   "validation": {
