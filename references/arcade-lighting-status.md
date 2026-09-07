@@ -37,6 +37,25 @@ The current staged Arcade pass has 42 UE Light actors: 2 DirectionalLights, 1 ex
 
 The first batch may use source-candela values with inverse-square falloff and disable low-impact shadows on a GTX 1650. Record that shadow policy as an approximation; do not silently turn it into a final parity claim.
 
+## Lumen decision
+
+DMC5 is a RE Engine title, not a UE5 project; UE5 Lumen is therefore not an original DMC5 rendering feature. It is valid to disable Lumen in the UE target for a 4 GB GPU, especially when the target editor reports Lumen exposure clipping or memory pressure. Keep these target-only console settings separate from source lighting data:
+
+```text
+r.Lumen.Reflections.Allow 0
+r.Lumen.DiffuseIndirect.Allow 0
+r.DynamicGlobalIlluminationMethod 0
+r.ReflectionMethod 0
+```
+
+Disabling Lumen is a hardware compatibility choice, not proof that the scene's source GI, IBL, probes, or local lights are restored.
+
+## Parameter parity
+
+- Local Arcade Point/Spot records currently preserve source intensity and color; 35 non-IES range mappings also match after the source-meter to UE-centimeter conversion.
+- The two common DirectionalLight colors and quaternions are preserved, but their UE intensity is intentionally normalized and must not be called numerically identical.
+- IES profile application remains unresolved when UE AssetTools/Interchange produces no `TextureLightProfile`; keep those four lights marked as approximations.
+
 ## Hardware warning
 
 On a GTX 1650 4 GB, the current Arcade editor pass can already approach the practical memory limit when another UE project is open. Do not restore all 39 local Arcade Point/Spot/IES records in one blind batch. The `Video memory has been exhausted` warning is a hard stop for further lighting additions until the memory source is isolated.
