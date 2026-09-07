@@ -82,4 +82,8 @@ When the GTX 1650 target shows white clipping in the Arcade corridor or a cyan w
 
 The current target override is saved as `Saved/arcade_lighting_balance_override.json`. It is diagnostic/compatibility tuning, not numeric DMC5 parity. Remove or revise it after validated IES profiles, light probes, or RE post-process exposure are restored.
 
+The target also has three explicitly labeled `M2_Arcade_RoadFill_00..02` low-intensity, no-shadow compatibility lights along the vehicle road. They compensate for the currently missing IBL/light-probe fill and are not counted as source Arcade lights. Keep them separate so they can be removed after the source environment resources are imported.
+
+The saved post-process keeps Histogram exposure but reduces adaptation speed up/down to `0.5`; this limits visible exposure pumping without pretending that UE's exposure model is DMC5's.
+
 The current UE map still has a separate environment-light gap: the explicit 39 Arcade Point/Spot/IES records are represented, but the source `IBL_M02_00/01` resources and `LP_M02_overall00/01` probe data are not yet applied. A black vehicle rear/corridor is therefore not proof that another arbitrary PointLight is missing. Restore the IBL/probe fill next, then retune local lights against it.

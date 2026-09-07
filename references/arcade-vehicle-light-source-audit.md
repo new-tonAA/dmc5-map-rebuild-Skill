@@ -51,6 +51,8 @@ The current UE pass restores source texture roles without adding invented vehicl
 
 Generic corridor balance changes must not modify the two source-backed vehicle headlight actors. If the rear of the vehicle remains dark, investigate camera side, source light direction, IBL/light-probe fill, and post-process exposure before adding any invented rear light.
 
+The current target uses three separate `M2_Arcade_RoadFill_*` compatibility lights for the missing vehicle-road environment fill. These are not vehicle light actors and must not be confused with the two source-backed headlight SpotLights.
+
 ## UE reconstruction rule
 
 - Do not add vehicle headlight SpotLights or PointLights from visual guesses. The Arcade target uses only the two source-backed records at object indices `178` and `182`.
