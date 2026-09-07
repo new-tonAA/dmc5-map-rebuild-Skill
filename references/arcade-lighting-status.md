@@ -61,7 +61,7 @@ Do not claim that turning off UE Lumen reproduces DMC5's ray-tracing-off mode. I
 - IES profile application remains unresolved when UE AssetTools/Interchange produces no `TextureLightProfile`; keep those four lights marked as approximations.
 - Unreal Python `unreal.Color` uses BGRA constructor order. Convert source RGB as `Color(b, g, r, a)` and validate actual component `r/g/b` values after saving.
 - Do not map `ReferenceEffectiveRange` directly to the UE attenuation radius for every light. When `IlluminanceThreshold` is available, derive an effective source range with `sqrt(Intensity / IlluminanceThreshold)` in source units and use the larger of that value and `ReferenceEffectiveRange`; direct `v11` mapping made several 50k-candela lights look too bright with 2–4 m cutoffs.
-- The source trailer `Headlight` material is `Transparent` with `headlight_ATOS` and shader-controlled emissive parameters; the static `_light` material is `DefS` with `light_ALBM` and no emissive map. Two source Arcade SpotLights at object indices `178` and `182` are positioned on the trailer front plane and are restored as the vehicle headlight light actors with the verified RE local `-Y` axis correction. Read [references/arcade-vehicle-light-source-audit.md](arcade-vehicle-light-source-audit.md).
+- The source trailer `Headlight` material is `Transparent` with `headlight_ATOS` and shader-controlled emissive parameters; the static `_light` material is `DefS` with `light_ALBM` and no emissive map. Two source Arcade SpotLights at object indices `178` and `182` are positioned on the trailer front plane and are restored as the vehicle headlight light actors with the verified RE local `-X` axis correction. Read [references/arcade-vehicle-light-source-audit.md](arcade-vehicle-light-source-audit.md).
 - `trailer_emissivecontrol.clip` is a material/animation-control resource that still needs curve/property decoding; it is not a license to add real lights.
 
 ## Hardware warning
@@ -81,3 +81,5 @@ When the GTX 1650 target shows white clipping in the Arcade corridor or a cyan w
 - Never alter the two source-backed vehicle headlight SpotLights `037/038` as part of this generic balance pass.
 
 The current target override is saved as `Saved/arcade_lighting_balance_override.json`. It is diagnostic/compatibility tuning, not numeric DMC5 parity. Remove or revise it after validated IES profiles, light probes, or RE post-process exposure are restored.
+
+The current UE map still has a separate environment-light gap: the explicit 39 Arcade Point/Spot/IES records are represented, but the source `IBL_M02_00/01` resources and `LP_M02_overall00/01` probe data are not yet applied. A black vehicle rear/corridor is therefore not proof that another arbitrary PointLight is missing. Restore the IBL/probe fill next, then retune local lights against it.

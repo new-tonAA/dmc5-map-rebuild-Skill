@@ -28,14 +28,14 @@ The same Arcade scene's resource table contains no `via.render.Light` component 
 
 The two Arcade `30000` SpotLight records at source object-table indices `178` and `182` sit on the trailer's front plane, with a shared source X position and two source Z positions separated across the vehicle width. They are the source-backed vehicle headlights, not invented helper lights.
 
-Their transform quaternion conversion remains `(qx, qz, qy, -qw)`, but RE Engine's vehicle SpotLight emission axis is local `-Y`. UE's `SpotLightComponent` emits along actor local `+X`. Therefore the UE actor rotation must apply a local -90-degree yaw correction after the reflected-basis quaternion conversion:
+Their transform quaternion conversion remains `(qx, qz, qy, -qw)`, but the verified vehicle headlight emission axis is local `-X`. UE's `SpotLightComponent` emits along actor local `+X`. Therefore the UE actor rotation must apply a local 180-degree yaw correction after the reflected-basis quaternion conversion:
 
 ```text
 q_ue = (qx, qz, qy, -qw)
-q_vehicle_spot = q_ue * Quaternion(local yaw -90 degrees)
+q_vehicle_spot = q_ue * Quaternion(local yaw 180 degrees)
 ```
 
-The corrected UE forward vectors are approximately `[0.954231, 0.090697, -0.284986]` and `[0.902671, 0.147724, -0.404182]`, with saved validation error `0.0` degrees against the applied transform.
+The corrected UE forward vectors are approximately `[0.029255, -0.976645, -0.212861]` and `[0.065283, -0.975371, -0.210689]`, matching the trailer's UE forward direction `[0.082724, -0.996573, 0]` within the source headlight pitch.
 
 Do not apply this vehicle-axis correction blindly to every DMC5 SpotLight. Classify the light by its source fixture/object relationship first. The nearby `SpotLight_nico` record is not included in the two-headlight correction.
 
