@@ -37,9 +37,11 @@ The current staged Arcade pass has 42 UE Light actors: 2 DirectionalLights, 1 ex
 
 The first batch may use source-candela values with inverse-square falloff and disable low-impact shadows on a GTX 1650. Record that shadow policy as an approximation; do not silently turn it into a final parity claim.
 
-## Lumen decision
+## Lumen and ray-tracing decision
 
-DMC5 is a RE Engine title, not a UE5 project; UE5 Lumen is therefore not an original DMC5 rendering feature. It is valid to disable Lumen in the UE target for a 4 GB GPU, especially when the target editor reports Lumen exposure clipping or memory pressure. Keep these target-only console settings separate from source lighting data:
+DMC5 source resources explicitly contain `Raytracing`, `ForceDisableRayTracing`, `OnlyRTSwitch`, `OptionRayTracing`, and `app.RayTracingMissionOptionOverwriter` records. The mission override exposes diffuse/specular resolution and specular secondary-bounce controls, including `Disable`, `Enable`, `Half`, and `Original` states.
+
+This is an original DMC5 ray-tracing system, not UE5 Lumen GI. The DMC5 enum `via.render.LightPowerUnitType.Lumen` is only a photometric unit name and must not be confused with Lumen global illumination. It is valid to disable Lumen in the UE target for a 4 GB GPU, especially when the target editor reports Lumen exposure clipping or memory pressure. Keep these target-only console settings separate from source lighting data:
 
 ```text
 r.Lumen.Reflections.Allow 0
@@ -49,6 +51,8 @@ r.ReflectionMethod 0
 ```
 
 Disabling Lumen is a hardware compatibility choice, not proof that the scene's source GI, IBL, probes, or local lights are restored.
+
+Do not claim that turning off UE Lumen reproduces DMC5's ray-tracing-off mode. If source RT parity is required, record the DMC5 RT switch/mission override separately and map it to UE ray-tracing, reflections, shadows, and post-process features as distinct decisions.
 
 ## Parameter parity
 
