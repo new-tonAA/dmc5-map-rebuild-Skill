@@ -19,19 +19,44 @@ The same Arcade scene's resource table contains no `via.render.Light` component 
 ## Material and animation evidence
 
 - `sm7000_trailer.mesh` contains `_Headlight`, `_neon_light1`, and `_neon_light2` mesh/material groups.
-- The normal Arcade trailer MDF identifies `_Headlight` with `headlight_ATOS` and a `Character_EmissiveSpreadAnim_Transparent` shader family, but the REI audit reports `Emissive_Intensity = 0.0` for the Arcade `_Headlight` material.
+- The normal Arcade trailer MDF identifies `_Headlight` with `headlight_ATOS`, a `Character_EmissiveSpreadAnim_Transparent` shader family, and shader-controlled emissive color/intensity parameters. A static REI import can report zero effective output when the runtime control is not evaluated; the MDF and clip must be read together.
 - The Arcade static `_light` material uses `light_ALBM` and has no verified emissive output.
 - `trailer_emissivecontrol.clip` contains `ClipTrack`/`ClipGroup` data targeting `sm7000_trailer_UI` and `sm7000_trailer`, with `Mesh`/`Materials` tracks and `ValueF` entries. This is material/animation-control metadata, not proof of a source PointLight or SpotLight. Decode its curve/property IDs before reproducing any animated glow.
 - The separate `sm7000_trailer_entrance_emissive` material file uses emissive shader families and neon submeshes, but it must remain excluded from Arcade until a scene/prefab reference is found.
 
+## Verified vehicle SpotLight axis
+
+The two Arcade `30000` SpotLight records at source object-table indices `178` and `182` sit on the trailer's front plane, with a shared source X position and two source Z positions separated across the vehicle width. They are the source-backed vehicle headlights, not invented helper lights.
+
+Their transform quaternion conversion remains `(qx, qz, qy, -qw)`, but RE Engine's vehicle SpotLight emission axis is local `-Y`. UE's `SpotLightComponent` emits along actor local `+X`. Therefore the UE actor rotation must apply a local -90-degree yaw correction after the reflected-basis quaternion conversion:
+
+```text
+q_ue = (qx, qz, qy, -qw)
+q_vehicle_spot = q_ue * Quaternion(local yaw -90 degrees)
+```
+
+The corrected UE forward vectors are approximately `[0.954231, 0.090697, -0.284986]` and `[0.902671, 0.147724, -0.404182]`, with saved validation error `0.0` degrees against the applied transform.
+
+Do not apply this vehicle-axis correction blindly to every DMC5 SpotLight. Classify the light by its source fixture/object relationship first. The nearby `SpotLight_nico` record is not included in the two-headlight correction.
+
+The clip parses as DMC5 Clip version 27 with `1030` frames, `4` timeline tracks, `14` properties, and `220` keys. It has two `Mesh` tracks under `sm7000_trailer_UI` and `sm7000_trailer`, each with three animated `Materials` entries and `ValueF` curves. Frame-zero values are `5.0`, `2.8`, and `0.4`; the current UE material pass maps these, by the three dynamic trailer material groups, to `_neon_light1`, `_neon_light2`, and `_Headlight` respectively. This material-group mapping is source-order based and remains a validation item for event playback.
+
+The current UE pass restores source texture roles without adding invented vehicle helper lights:
+
+- `_neon_light1` -> `neonsign_ALP`, source color `(0, 0.0509804, 0.2039216)`, clip frame-zero intensity `5.0`.
+- `_neon_light2` -> `NeonTest_ALBA`, clip frame-zero intensity `2.8` and source `EmissiveColorControl=0.7`.
+- `_Headlight` -> `headlight_ATOS` mask, source high-color white, clip frame-zero intensity `0.4`.
+- `_ExteriorShell_02` -> `ExteriorShell_02_EMI`, source color `(0, 0.2, 1)`, source emissive intensity `1.0`.
+- `_lamp` remains non-emissive because its source `Emissive_Intensity` and control are `0.0`.
+
 ## UE reconstruction rule
 
-- Do not add vehicle headlight SpotLights or PointLights from visual guesses.
-- Keep vehicle source-light actor count at zero unless the SCN/prefab/event data identifies an actual light component or a verified fixture relationship.
+- Do not add vehicle headlight SpotLights or PointLights from visual guesses. The Arcade target uses only the two source-backed records at object indices `178` and `182`.
+- Keep all other vehicle source-light additions blocked unless the SCN/prefab/event data identifies an actual light component or verified fixture relationship.
 - Reproduce the Arcade vehicle first with the exact mesh/material/ATOS data and the decoded `trailer_emissivecontrol.clip` behavior.
 - Only after a source-backed local-light relationship is confirmed may a small UE light be added, and it must record the source object/resource, transform chain, color, intensity, radius, and approximation status.
 - If the source evidence remains material-only, document the remaining difference rather than compensating with a broad or bright helper light.
 
 ## Current target state
 
-The target UE map has no `M2_DMC5_VehicleHeadlight_*` approximation actors. After removal, the saved validation state is 483 total actors, 440 StaticMeshActors, and 42 LightActors (2 DirectionalLights, 1 SkyLight, and 39 Arcade local-light representations). Lumen remains disabled only as a UE hardware choice; MegaLights is untouched.
+The target UE map has no `M2_DMC5_VehicleHeadlight_*` approximation actors. The two source-backed Arcade SpotLights at indices `178` and `182` remain under the normal `M2_DMC5_LocalLight_*` naming. The saved validation state is 483 total actors, 440 StaticMeshActors, and 42 LightActors (2 DirectionalLights, 1 SkyLight, and 39 Arcade local-light representations). Lumen remains disabled only as a UE hardware choice; MegaLights is untouched.
