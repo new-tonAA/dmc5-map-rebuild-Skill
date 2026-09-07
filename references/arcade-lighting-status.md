@@ -65,6 +65,8 @@ The `PZ_M02_arcade` post-process record is now decoded from `location02_light.sc
 
 The target UE post-process maps this to Manual exposure with bias/EV `3.0` and `r.LocalExposure 0`. This is a source-driven baseline, not a visual brightness adjustment.
 
+The supplied original-game reference image is consistent with this source interpretation: cool blue-gray global ambience and fog, warm localized wall/fixture lights, and no broad saturated-blue flood or uniformly yellow corridor wash. Use the image as qualitative validation of fog/localization only; use SCN/MDF/IES/LUT/Probe data for numeric intensity, color, range, and exposure decisions.
+
 All 39 Arcade local-light actors now restore source intensity, BGRA-corrected color, derived effective range, spot cone/spread, source radius, and source shadow flags. Their validation is saved in `Saved/source_light_parity_validation.json` and currently reports zero parameter errors. Four IES actors remain approximate only because the original IES profile path is not yet attached in UE.
 
 Do not use `arcade_lighting_balance_override.json` or `final_environment_light_balance.json` as source truth. Those records describe prior diagnostic experiments. The authoritative local-light state is `Saved/arcade_source_light_values_restored.json`.
@@ -97,7 +99,7 @@ When the GTX 1650 target shows white clipping in the Arcade corridor or a cyan w
 
 The current target override is saved as `Saved/arcade_lighting_balance_override.json`. It is diagnostic/compatibility tuning, not numeric DMC5 parity. Remove or revise it after validated IES profiles, light probes, or RE post-process exposure are restored.
 
-The target also has three explicitly labeled `M2_Arcade_RoadFill_00..02` low-intensity, no-shadow compatibility lights along the vehicle road. They compensate for the currently missing IBL/light-probe fill and are not counted as source Arcade lights. Keep them separate so they can be removed after the source environment resources are imported.
+The target no longer has the temporary `M2_Arcade_RoadFill_00..02` lights. They were removed after the Arcade00 Cubemap restoration; remaining road differences are tracked as unresolved LightProbe/environment parity.
 
 The saved post-process keeps Histogram exposure but reduces adaptation speed up/down to `0.5`; this limits visible exposure pumping without pretending that UE's exposure model is DMC5's.
 
