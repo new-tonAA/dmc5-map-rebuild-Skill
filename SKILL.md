@@ -9,6 +9,8 @@ metadata:
 
 Use this skill for DMC5 RE Engine scene reconstruction in Unreal Engine 5, especially areas containing architecture, PropsLarge, roofs, signs, fake lights, and original materials.
 
+Lighting restoration is a separate, staged workstream. Do not describe an Arcade reconstruction as lighting-complete merely because a DirectionalLight, SkyLight, LUT, or a few helper lights are present. Read [references/arcade-lighting-status.md](references/arcade-lighting-status.md) before changing source lights.
+
 This is a workflow skill, not an asset pack. It does not require a bundled `.uproject`, `.umap`, `.uasset`, extracted game files, textures, or meshes.
 
 Before using it, define local paths for the target UE project, UE executable, DMC5 extraction, Blender REI add-on, and backup directory. Use placeholders such as `<UE_PROJECT>`, `<UE_ROOT>`, `<DMC5_EXTRACT>`, `<REI_ADDON>`, and `<BACKUP_ROOT>` in scripts and notes.
@@ -47,8 +49,9 @@ Before using it, define local paths for the target UE project, UE executable, DM
    - `r.ExposureOffset 0`
 9. Save all dirty assets and the level before a backup. Verify asset paths, material slots, texture references, actor count, bounds, transforms, and a viewport or Blender screenshot.
    - For multi-part vehicles, verify every submesh actor has the same SCN-derived world rotation and that representative interior, wheel, window, and shell pieces use the expected material family.
-10. Restore intended scene lighting after diagnostic preview changes. The Arcade validation baseline is DirectionalLight intensity `4.0`, SkyLight intensity `0.35`, and indirect/volumetric scattering `1.0`; do not save temporary exposure tuning as final lighting.
-11. When RE Engine fake-light materials cannot be reproduced, place a small number of low-intensity real lights at verified fixture/emissive actor centers. Keep them in a dedicated folder, avoid broad floodlights, disable unnecessary shadows on helper lights, and separate viewport exposure commands from saved light values.
+10. Audit the region-specific light SCN before claiming intended lighting is restored. Count `DirectionalLight`, `PointLight`, `SpotLight`, `IESLight`, `IBL`, `LightProbes`, and post-process objects from the RSZ object table, then parse relevant fields and full parent chains.
+11. Keep diagnostic lighting and source-light restoration separate. The historical Arcade baseline of DirectionalLight `4.0`, SkyLight `0.35`, and indirect/volumetric scattering `1.0` is only a preview fallback, not proof of source-light parity.
+12. When RE Engine fake-light materials cannot be reproduced, place a small number of low-intensity real lights at verified fixture/emissive actor centers only after the region light inventory is known. Keep them in a dedicated folder, avoid broad floodlights, disable unnecessary shadows on helper lights, and record every approximation as incomplete.
 
 # Validation gates
 
@@ -58,6 +61,7 @@ Before using it, define local paths for the target UE project, UE executable, DM
 - PropsLarge and architecture both exist; the scene has at least 30 valid StaticMesh actors/instances.
 - Actors are distributed at SCN-derived positions rather than stacked at one origin.
 - No `Video memory exhausted` or bulk texture duplication occurs.
+- Source-light parity is not claimed unless region-specific Point/Spot/IES objects, IBL/reflection resources, LUTs, post-process zones, and parent-chain transforms have been audited.
 
 For the portable debugging history, read [references/arcade-case-study.md](references/arcade-case-study.md).
 

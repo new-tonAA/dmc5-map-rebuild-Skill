@@ -12,11 +12,19 @@
     "world_yaw_deg": -85.2549
   },
   "lighting": {
-    "directional_intensity": 4.0,
-    "sky_intensity": 0.35,
-    "indirect_lighting_intensity": 1.0,
-    "volumetric_scattering_intensity": 1.0,
-    "converted_fixture_point_lights": 2
+    "status": "incomplete_until_region_light_inventory_is_restored",
+    "common_directional_records": 2,
+    "arcade_point_records": 23,
+    "arcade_spot_records": 12,
+    "arcade_ies_records": 4,
+    "arcade_lightprobe_records": 2,
+    "ibl_records": 3,
+    "diagnostic_directional_intensity_total": 4.0,
+    "diagnostic_sky_intensity": 0.35,
+    "diagnostic_indirect_lighting_intensity": 1.0,
+    "diagnostic_volumetric_scattering_intensity": 1.0,
+    "converted_fixture_point_lights": 0,
+    "source_light_parity_verified": false
   },
   "validation": {
     "all_active_static_meshes_have_material": true,

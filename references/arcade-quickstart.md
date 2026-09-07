@@ -30,8 +30,9 @@ level  = /Game/Maps/M2_Arcade_Final
 4. Build materials from `ALBM`, `NRMR`, and MDF-confirmed auxiliary maps.
 5. Inspect REI shader type and `Emissive_Intensity` before choosing UE blend mode or Emissive.
 6. Assemble the final level only; keep old import/test levels out of the validation pass.
-7. Review textures in Unlit, then review lighting in Lit.
-8. Run the UE validation script, save the level, and create a private backup.
+7. Inventory the region-specific light SCN before adding any UE helper light. For `l02_01_arcade`, inspect PointLight, SpotLight, IESLight, IBL, LightProbes, LUT, and post-process records; do not infer lighting from `l02_common` alone.
+8. Review textures in Unlit, then review source/diagnostic lighting in Lit. Treat a small DirectionalLight/SkyLight setup as incomplete until local light records are audited.
+9. Run the UE validation script, save the level, and create a private backup.
 
 ## Material rules
 
@@ -44,6 +45,10 @@ Tran / Dithered -> normally Masked/Dithered with documented opacity channel
 ```
 
 If a populated StaticMesh slot still renders white, inspect the material graph for `/InterchangeAssets/gltf` placeholders before changing exposure.
+
+## Lighting status gate
+
+The Arcade lighting pass is incomplete unless the source region file has been scanned. The known Arcade source inventory includes 23 PointLight, 12 SpotLight, and 4 IESLight records in `l02_01_arcade.scn.19`, in addition to the 2 common DirectionalLight records. Do not replace this inventory with two DirectionalLights, one SkyLight, or temporary fixture lights.
 
 ## Final checks
 
