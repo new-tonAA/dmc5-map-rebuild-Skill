@@ -49,6 +49,8 @@ The current UE pass restores source texture roles without adding invented vehicl
 - `_ExteriorShell_02` -> `ExteriorShell_02_EMI`, source color `(0, 0.2, 1)`, source emissive intensity `1.0`.
 - `_lamp` remains non-emissive because its source `Emissive_Intensity` and control are `0.0`.
 
+Generic corridor balance changes must not modify the two source-backed vehicle headlight actors. If the rear of the vehicle remains dark, investigate camera side, source light direction, IBL/light-probe fill, and post-process exposure before adding any invented rear light.
+
 ## UE reconstruction rule
 
 - Do not add vehicle headlight SpotLights or PointLights from visual guesses. The Arcade target uses only the two source-backed records at object indices `178` and `182`.

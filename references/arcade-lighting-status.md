@@ -69,3 +69,15 @@ Do not claim that turning off UE Lumen reproduces DMC5's ray-tracing-off mode. I
 On a GTX 1650 4 GB, the current Arcade editor pass can already approach the practical memory limit when another UE project is open. Do not restore all 39 local Arcade Point/Spot/IES records in one blind batch. The `Video memory has been exhausted` warning is a hard stop for further lighting additions until the memory source is isolated.
 
 The Lumen exposure/clipping warning and the ForwardShadingPriority warning are diagnostic signals, not evidence that the source lighting is complete. Keep Lumen/exposure console changes separate from saved source-light values.
+
+## Conservative UE balance layer
+
+When the GTX 1650 target shows white clipping in the Arcade corridor or a cyan wash, do not overwrite the DMC5 source manifest. The target may use a separately recorded balance layer while IES profiles are unresolved:
+
+- Reduce cyan IES-as-PointLight fallbacks strongly; the missing IES angular profile can make a 100,000-candela source appear as an omnidirectional blue flood.
+- Reduce repeated blue PointLight fixtures only as a target-side compatibility override, keeping their source RGB/intensity in `dmc5_arcade_local_lights_applied.json`.
+- Reduce nearby high-intensity white SpotLight fallbacks that produce local clipping.
+- Raise SkyLight modestly for environment fill instead of adding a broad high-intensity floodlight.
+- Never alter the two source-backed vehicle headlight SpotLights `037/038` as part of this generic balance pass.
+
+The current target override is saved as `Saved/arcade_lighting_balance_override.json`. It is diagnostic/compatibility tuning, not numeric DMC5 parity. Remove or revise it after validated IES profiles, light probes, or RE post-process exposure are restored.
