@@ -90,7 +90,7 @@ Then use `Unlit` / `无光照`. Lit mode is for lighting review; cached lighting
 
 After preview tests, restore saved scene lighting instead of leaving diagnostic values in the level. The Arcade baseline used here is DirectionalLight `4.0`, SkyLight `0.35`, and indirect/volumetric scattering `1.0`.
 
-The Arcade common-light SCN could not be safely converted into complete UE point/spot lights because its RSZ parse was unreliable. The practical fallback is two low-intensity PointLights placed at the verified `sm0131_illumination` fixture centers, stored under a dedicated converted-fake-lights folder. Do not compensate for missing fake lights with a broad high-intensity floodlight.
+The Arcade common-light SCN should not be represented by broad guessed floodlights. If a temporary fixture helper is used during diagnosis, keep it separate and mark it incomplete; remove it before claiming source parity. For vehicle lighting, do not place headlight helpers from mesh bounds. Verify the source SCN/prefab/event relationship or decode the trailer material-animation clip first. See [references/arcade-vehicle-light-source-audit.md](arcade-vehicle-light-source-audit.md).
 
 ## Private backup recipe
 

@@ -54,6 +54,23 @@ Disabling Lumen is a hardware compatibility choice, not proof that the scene's s
 
 Do not claim that turning off UE Lumen reproduces DMC5's ray-tracing-off mode. If source RT parity is required, record the DMC5 RT switch/mission override separately and map it to UE ray-tracing, reflections, shadows, and post-process features as distinct decisions.
 
+## Source-authoritative Arcade baseline
+
+The `PZ_M02_arcade` post-process record is now decoded from `location02_light.scn.19`:
+
+- `AutoExposure = 0`; the original Arcade zone does not use dynamic auto exposure.
+- `EV = 3`.
+- `BrightAdaptationRate = 0.03` and `DarkAdaptationRate = 0.05` are retained as source metadata, but are inactive when `AutoExposure = 0`.
+- `MaxWhitePoint = 5`, `MinWhitePoint = 3.5`, and `WhiteRange = 0.95` remain source tone-mapping metadata pending a dedicated UE curve mapping.
+
+The target UE post-process maps this to Manual exposure with bias/EV `3.0` and `r.LocalExposure 0`. This is a source-driven baseline, not a visual brightness adjustment.
+
+The supplied original-game reference image is consistent with this source interpretation: cool blue-gray global ambience and fog, warm localized wall/fixture lights, and no broad saturated-blue flood or uniformly yellow corridor wash. Use the image as qualitative validation of fog/localization only; use SCN/MDF/IES/LUT/Probe data for numeric intensity, color, range, and exposure decisions.
+
+All 39 Arcade local-light actors now restore source intensity, BGRA-corrected color, derived effective range, spot cone/spread, source radius, and source shadow flags. Their validation is saved in `Saved/source_light_parity_validation.json` and currently reports zero parameter errors. Four IES actors remain approximate only because the original IES profile path is not yet attached in UE.
+
+Do not use `arcade_lighting_balance_override.json` or `final_environment_light_balance.json` as source truth. Those records describe prior diagnostic experiments. The authoritative local-light state is `Saved/arcade_source_light_values_restored.json`.
+
 ## Parameter parity
 
 - Local Arcade Point/Spot records currently preserve source intensity and color; 35 non-IES range mappings also match after the source-meter to UE-centimeter conversion.
@@ -61,11 +78,37 @@ Do not claim that turning off UE Lumen reproduces DMC5's ray-tracing-off mode. I
 - IES profile application remains unresolved when UE AssetTools/Interchange produces no `TextureLightProfile`; keep those four lights marked as approximations.
 - Unreal Python `unreal.Color` uses BGRA constructor order. Convert source RGB as `Color(b, g, r, a)` and validate actual component `r/g/b` values after saving.
 - Do not map `ReferenceEffectiveRange` directly to the UE attenuation radius for every light. When `IlluminanceThreshold` is available, derive an effective source range with `sqrt(Intensity / IlluminanceThreshold)` in source units and use the larger of that value and `ReferenceEffectiveRange`; direct `v11` mapping made several 50k-candela lights look too bright with 2–4 m cutoffs.
-- The source trailer `Headlight` material is `DefS` with `headlight_ATOS` and `Emissive_Intensity=0.0`; the static `_light` material is `DefS` with `light_ALBM` and no emissive map. No vehicle Light Actor was found in the Arcade light SCN.
-- Two low-intensity vehicle SpotLights may be placed from the verified Full_04 headlight bounds, but they must be labeled as vehicle-light approximations rather than source parity.
+- The source trailer `Headlight` material is `Transparent` with `headlight_ATOS` and shader-controlled emissive parameters; the static `_light` material is `DefS` with `light_ALBM` and no emissive map. Two source Arcade SpotLights at object indices `178` and `182` are positioned on the trailer front plane and are restored as the vehicle headlight light actors with the verified RE local `-X` axis correction. Read [references/arcade-vehicle-light-source-audit.md](arcade-vehicle-light-source-audit.md).
+- `trailer_emissivecontrol.clip` is a material/animation-control resource that still needs curve/property decoding; it is not a license to add real lights.
 
 ## Hardware warning
 
 On a GTX 1650 4 GB, the current Arcade editor pass can already approach the practical memory limit when another UE project is open. Do not restore all 39 local Arcade Point/Spot/IES records in one blind batch. The `Video memory has been exhausted` warning is a hard stop for further lighting additions until the memory source is isolated.
 
 The Lumen exposure/clipping warning and the ForwardShadingPriority warning are diagnostic signals, not evidence that the source lighting is complete. Keep Lumen/exposure console changes separate from saved source-light values.
+
+## Conservative UE balance layer
+
+When the GTX 1650 target shows white clipping in the Arcade corridor or a cyan wash, do not overwrite the DMC5 source manifest. The target may use a separately recorded balance layer while IES profiles are unresolved:
+
+- Reduce cyan IES-as-PointLight fallbacks strongly; the missing IES angular profile can make a 100,000-candela source appear as an omnidirectional blue flood.
+- Reduce repeated blue PointLight fixtures only as a target-side compatibility override, keeping their source RGB/intensity in `dmc5_arcade_local_lights_applied.json`.
+- Reduce nearby high-intensity white SpotLight fallbacks that produce local clipping.
+- Raise SkyLight modestly for environment fill instead of adding a broad high-intensity floodlight.
+- Never alter the two source-backed vehicle headlight SpotLights `037/038` as part of this generic balance pass.
+
+The current target override is saved as `Saved/arcade_lighting_balance_override.json`. It is diagnostic/compatibility tuning, not numeric DMC5 parity. Remove or revise it after validated IES profiles, light probes, or RE post-process exposure are restored.
+
+The target no longer has the temporary `M2_Arcade_RoadFill_00..02` lights. They were removed after the Arcade00 Cubemap restoration; remaining road differences are tracked as unresolved LightProbe/environment parity.
+
+The saved post-process keeps Histogram exposure but reduces adaptation speed up/down to `0.5`; this limits visible exposure pumping without pretending that UE's exposure model is DMC5's.
+
+The target now has a converted Arcade local cubemap at `/Game/DMC5/M2/Lighting/IBLTest/Arcade00_Cube`, connected to `M2_Arcade_SkyLight`. It was built from `lc_m02_arcade00.tex.11` by extracting six BC6H faces, decoding them with Blender, and rebuilding a standard six-face DDS Cubemap because the custom UE 5.8 Interchange path rejects BC6H DDS input. The source `IBL_M02_00/01` resources and `LP_M02_overall00/01` probe data are still not fully mapped; the cubemap is an environment-fill restoration pass, not complete LightProbe parity.
+
+After the cubemap is active, remove the temporary `M2_Arcade_RoadFill_*` lights and retune local source-light scales against the environment. A black vehicle rear/corridor is no longer proof that another arbitrary PointLight is missing; check the cubemap, probe data, local light scale, and post-process exposure first.
+
+The full Arcade source coverage audit is saved as `Saved/arcade_all_road_source_coverage.json`. It confirms 39 explicit lights are distributed across `display01`, `display02`, `display03`, `display04`, the `OCC_arcade00` fixture group, and the unnamed/street/vehicle group. It also confirms two Arcade LightProbe objects: `LP_M02_arcade` and `LP_M02_arcade_hokan`, both using `LP_M02_arcade.lprb` plus `LP_M02_merge_net.prb`. The three dark roads should be diagnosed against this probe coverage, not by assuming the `display01` walkway lights represent the whole map.
+
+`LC_M02_arcade00`, `LC_M02_arcade01`, and `LC_M02_arcade_event` are distinct source cubemap states. Keep `arcade00` as the normal Arcade baseline; do not globally substitute the alternate or event cubemap.
+
+The Cubemap extraction tool previously ignored `imageIndex`, producing six duplicate faces. That bug is fixed: each LocalCubemap now has distinct source faces and corrected DDS Cubemap assets. Do not use old test Cubemaps generated before this fix.
